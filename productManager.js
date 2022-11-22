@@ -6,42 +6,69 @@ class ProductManager {
 
     getProducts = () => { return this.products }
 
-    addProduct = (title, description, price, thumbmail, code, stock) => {
+    getNextID = () => {
+        const count = this.products.length
 
-        // Funcion generadora de ID Unicos. Fuente: https://es.stackoverflow.com/
-        function id() {
-            var d = new Date().getTime();
-            var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                var r = (d + Math.random() * 16) % 16 | 0;
-                d = Math.floor(d / 16);
-                return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-            });
-            return uuid;
+        if (count > 0) {
+            const lastproduct = this.products[count - 1]
+            const id = lastproduct.id + 1
+
+            return id
+        } else {
+
+            return 1
         }
-        console.log(id());
-
-        /* const id = this.products + 1 */
-
-        const product = {
-            id,
-            title: "producto prueba",
-            description: "Este es un producto prueba",
-            price: 200,
-            thumbnail: "Sin imagen",
-            code: "abc123",
-            stock: 25,
-        }
-
-        const sameCode = (element) => element == product.code;
-        if (!this.products.some(sameCode)) { this.products.push(product) } else { console.log("A Code is duplicated") }
-
     }
 
+    addProducts = (title, description, price, thumbnail, code, stock) => {
+
+        const id = this.getNextID()
+        const product = {
+            id,
+            title,
+            description,
+            price,
+            thumbnail,
+            code,
+            stock,
+
+        }
+
+        const codeDuplicado = this.products.some(product => product.code === code)
+        if (codeDuplicado == true) return console.log("CODE REPETIDO - No se carga producto")
+        if (!codeDuplicado) { this.products.push(product) }
+    }
+
+    getProductByID = (id) => {
+        const productFound = this.products.find(product => product.id == id)
+        if (productFound == undefined) return console.log("ERROR: PRODUCTO NO ENCONTRADO")
+        console.log(productFound)
+
+    }
 }
 
-const manager = new ProductManager()
+const productManager = new ProductManager()
 
-manager.addProduct("producto prueba", "Este es un producto prueba", 200, "Sin imagen", "abc123", 25)
+console.log(productManager.getProducts());
 
-console.log(manager.products);
+productManager.addProducts("Producto prueba 1", "Este es un producto de prueba", 200, "Sin imagen", "abc123", 25)
 
+console.log(productManager.getProducts())
+console.log("------------------------------------------------")
+
+productManager.addProducts("Producto prueba 2", "Este es un producto de prueba", 300, "Sin imagen", "abc123", 21)
+productManager.addProducts("      ", "", 0, "", "", )
+
+console.log(productManager.getProducts())
+console.log("-----------------------------------------------------")
+
+productManager.addProducts("Producto prueba 3", "Este es un producto de prueba", 1500, "Con imagen", "abc111", 15)
+productManager.addProducts("Producto prueba 4  ", "Este es un producto de prueba", 700, "  Sin imagen", "abd100", 18)
+productManager.addProducts("Producto prueba 5", "      ", 150, "Sin imagen", "abe102", 20)
+
+console.log(productManager.getProducts())
+console.log("---------------------------------------------------")
+
+productManager.getProductByID(2);
+productManager.getProductByID(3);
+productManager.getProductByID(15);
