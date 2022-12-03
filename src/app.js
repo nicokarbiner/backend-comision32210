@@ -2,11 +2,11 @@ const express = require('express');
 const app = express();
 
 const ProductManager = require('./productManager')
-const manager = new ProductManager('./products.json');
+const productManager = new ProductManager('./products.json');
 
 
 app.get('/products', async (req, res) => {
-    const products = await manager.getProducts()
+    const products = await productManager.getProducts()
     let limit = req.query.limit
     if (!limit) res.send({products})
     else {
@@ -19,9 +19,9 @@ app.get('/products', async (req, res) => {
     }
 })
 
-app.get('/products/:pid', async (req, res) => {
+app.get('/products/:id', async (req, res) => {
     const id = req.params.pid
-    const product = await manager.getProductById(id)
+    const product = await productManager.getProductById(id)
     res.send({product})
 })
 
