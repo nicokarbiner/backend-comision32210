@@ -1,7 +1,7 @@
 const express = require('express')
 
-const ProductManager = require('./productManager')
-const productManager = new ProductManager('./products.json');
+const ProductManager = require('./ProductManager')
+const productManager = new ProductManager('products.json');
 
 const app = express();
 
@@ -21,8 +21,8 @@ app.get('/products', async (req, res) => {
 
 app.get('/products/:pid', async (req, res) => {
     const id = req.params.pid
-    const product = await productManager.getProductById(id)
-    if (product) res.send(product)
+    const products = await productManager.getProductById(id)
+    if (products) res.send(products)
     else res.send({ error: 'No se ha encontrado el producto' })
 })
 
