@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 const ProductManager = require('./ProductManager')
-const manager = new ProductManager('producto.json');
+const manager = new ProductManager('products.json');
 
 
 app.get('/products', async (req, res) => {
