@@ -1,0 +1,28 @@
+{
+  "name": "productmanager01",
+  "version": "1.0.0",
+  "description": "Programacion Backend",
+  "main": "productManager.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicokarbiner/backend-comision32210.git"
+  },
+  "keywords": [
+    "coderhouse",
+    "backend",
+    "programacion"
+  ],
+  "author": "Nicolas Karbiner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicokarbiner/backend-comision32210/issues"
+  },
+  "homepage": "https://github.com/nicokarbiner/backend-comision32210#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "moment": "^2.29.4"
+  }
+}
