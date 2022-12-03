@@ -19,13 +19,10 @@ app.get('/products', async (req, res) => {
     }
 })
 
-app.get('/products/:id', async (req, res) => {
-    const id = req.params.id
-    console.log(id)
-    const products = await productManager.getProductById(id)
-
-    if(products) res.send(products)
-    else res.send({error: 'No se ha encontrado el producto'})
+app.get('/products/:pid', async (req, res) => {
+    const id = req.params.pid
+    const product = await manager.getProductById(id)
+    res.send({product})
 })
 
 app.listen(8080, () => {
