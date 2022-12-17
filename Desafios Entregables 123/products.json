@@ -1,0 +1,12 @@
+[
+    {"id":1,"title":"Producto Prueba 1","description":"Este es un producto de prueba","price":200,"thumbnail":"Sin imagen","code":"abc123","stock":25},
+    {"id":2,"title":"Producto prueba 2","description":"Este es un producto de prueba","price":300,"thumbnail":"Sin imagen","code":"abc129","stock":21},
+    {"id":3,"title":"Producto prueba 3","description":"Este es un producto de prueba","price":700,"thumbnail":"Sin imagen","code":"abd100","stock":18},
+    {"id":4,"title":"Producto prueba 4","description":"Este es un producto de prueba","price":1500,"thumbnail":"Con imagen","code":"abc345","stock":15},
+    {"id":5,"title":"Producto prueba 5","description":"Este es un producto de prueba","price":700,"thumbnail":"Sin imagen","code":"abd124","stock":45},
+    {"id":6,"title":"Producto prueba 6","description":"Este es un producto de prueba","price":1700,"thumbnail":"Con imagen","code":"abc110","stock":7},
+    {"id":7,"title":"Producto prueba 7","description":"Este es un producto de prueba","price":760,"thumbnail":"Sin imagen","code":"abd109","stock":28},
+    {"id":8,"title":"Producto prueba 8","description":"Este es un producto de prueba","price":5500,"thumbnail":"Con imagen","code":"abc200","stock":25},
+    {"id":9,"title":"Producto prueba 9","description":"Este es un producto de prueba","price":1700,"thumbnail":"Sin imagen","code":"abd101","stock":38},
+    {"id":10,"title":"Producto prueba 10","description":"Este es un producto de prueba","price":15000,"thumbnail":"Con imagen","code":"abc102","stock":7}
+]
