@@ -36,7 +36,7 @@ class ProductsManager {
         const products = await this.getProducts()
         const id = await this.getNextID()
         
-        if (!title || !description || !code || !Number.isInteger(price) || !Number.isInteger(stock) || !category) return "Fail"
+        if (!title || !description || !code || !Number(price) || !Number(stock) || !category) return "Fail"
     
         const product = {
             id,

@@ -25,12 +25,17 @@ app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 
 socketServer.on('connection', (socket) => {
-    socket.on('messageAdd', (data) => {
+    socket.on('messageAdd',async (data) => {
+        await productsManager.addProduct(data)
+        const productos = await productsManager.getProducts();
         socketServer.emit('msg_all_add', data)
     })
 
-    socket.on('messageDel', (data) => {
+    socket.on('messageDel', async (data) => {
+        await productsManager.deletProduct(data)
+        const productos = await productsManager.getProducts();
         socketServer.emit('msg_all_del', data)
     })
+
 
 })
