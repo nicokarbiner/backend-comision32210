@@ -1,0 +1,11 @@
+<div>
+    <h1>{{product.title}}</h1>
+    <p>{{product.description}}</p>
+    <p>{{product.price}}</p>
+    <p>{{product.category}}</p>
+    <img src="{{product.thumbnails}}" height="150">    
+</div>
+
+<form action="/delete/{{product._id}}" method="get">
+    <input type="submit" value="Delete product">
+</form>
