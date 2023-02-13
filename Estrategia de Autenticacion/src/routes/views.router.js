@@ -1,7 +1,9 @@
 import { Router } from 'express'
+import passport from 'passport'
 import cartModel from '../dao/models/cart.model.js'
 import productModel from '../dao/models/product.model.js'
 import UserModel from '../dao/models/user.model.js'
+import { createHash, isValidPassword } from '../utils.js'
 
 const router = Router()
 
@@ -132,7 +134,7 @@ router.get('/carts/:cid', async (req, res) => {
         const cid = req.params.cid
         const products = await cartModel.findOne({_id: cid}).populate('products.product').lean()
         const user = req.session.user
-        res.render('cart', products)
+        res.render('cart', {products, user})
 
     } catch (error) {
         console.log(error)
@@ -177,13 +179,11 @@ router.get('/sessions/register', logged, (req, res) => {
 })
 
 // Crear usuarios en la DB
-router.post('/sessions/register', async( req, res) => {
-    const newUser = req.body
-
-    const user = new UserModel(newUser)
-    await user.save()
-
+router.post('/sessions/register', passport.authenticate('register', {failureRedirect: 'failregister'}), async( req, res) => {
     res.redirect('/sessions/login')
+})
+router.get('/failregister', async (req, res) => {
+    res.status(400).render('errors/base', {error: 'Failed to register'})
 })
 
 // Vista de login
@@ -192,35 +192,21 @@ router.get('/sessions/login', logged, (req, res) => {
 })
 
 // Login
-router.post('/sessions/login', async (req, res) => {
+router.post('/sessions/login', passport.authenticate('login', {failureRedirect: '/faillogin'}), async (req, res) => {
+    const user = req.user
+    if(!user) return res.status(400).json({status: 'error', error: 'Invalid credentials'})
 
-    const { email, password } = req.body
-
-    if(email === 'testing@coderhouse.com' && password === 'Testing2023') {
-        
-        const admin = {
-            email,
-            password,
-            first_name: 'Testing',
-            last_name: 'Coderhouse',
-            age: 20,
-            role: 'admin'
-        }
-        
-        req.session.user = admin
-        res.redirect('/products')
+    req.session.user = {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        age: user.age,
+        email: user.email,
+        role: user.role
     }
-    
-    const user = await UserModel.findOne({email, password}).lean().exec()
-    if(!user) {
-        return res.status(401).render('errors/base', {
-            error: 'Error en email y/o password'
-        })
-    }
-
-    req.session.user = user
     res.redirect('/products')
-    
+})
+router.get('/faillogin', (req, res) => {
+    res.status(400).render('errors/base', {error: 'Failed login'})
 })
 
 // Cerrar sesión
@@ -243,6 +229,12 @@ router.get('/sessions/user', requireAuth, (req, res) => {
     }
 
     res.render('sessions/user', {user})
+})
+
+// Iniciar sesión con Github
+router.get('/api/sessions/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res) => {
+    req.session.user = req.user
+    return res.redirect('/products')
 })
 
 export default router

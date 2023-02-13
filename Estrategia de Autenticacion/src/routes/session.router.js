@@ -1,5 +1,7 @@
 import { Router } from "express";
 import UserModel from "../dao/models/user.model.js";
+import { createHash, isValidPassword } from "../utils.js";
+import passport from "passport";
 
 const router = Router()
 
@@ -20,39 +22,29 @@ function requireAuth(req, res, next) {
 }
 
 // Crear usuarios en la DB
-router.post('/register', logged, async( req, res) => {
-    const newUser = req.body
-
-    const user = new UserModel(newUser)
-    await user.save()
-
-    res.json({status: 'success', payload: 'Register successful'})
+router.post('/register', logged, passport.authenticate('register', {failureRedirect: '/failregister'}), async( req, res) => {
+    res.json({status: 'success', payload: req.user})
+})
+router.get('/failregister', async (req, res) => {
+    res.json({status: 'error', error: 'Failed to register'})
 })
 
 // Login
-router.post('/login', logged, async (req, res) => {
+router.post('/login', logged, passport.authenticate('login', {failureRedirect: '/faillogin'}), async (req, res) => {
+    const user = req.user
+    if(!user) return res.status(400).json({status: 'error', error: 'Invalid credentials'})
 
-    const { email, password } = req.body
-
-    if(email === 'testing@coderhouse.com' && password === 'Testing2023') {
-        const admin = {
-            email,
-            password,
-            first_name: 'Testing',
-            last_name: 'Coderhouse',
-            age: 20,
-            role: 'admin'
-        }
-        req.session.user = admin
-        res.json({status: 'success', payload: admin})
-    } else {
-        const user = await UserModel.findOne({email, password}).lean().exec()
-        if(!user) {
-            return res.status(401).json({status: 'error', payload: 'Error en usuario y/o contraseña'})
-        }
-
-        req.session.user = user
-        res.json({status: 'success', payload: 'Login successful'})}
+    req.session.user = {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        age: user.age,
+        email: user.email,
+        role: user.role
+    }
+    res.json({status: 'success', payload: user})
+})
+router.get('/faillogin', (req, res) => {
+    res.json({status: 'error', error: 'Failed login'})
 })
 
 // Cerrar sesión
@@ -77,5 +69,7 @@ router.get('/user', requireAuth, (req, res) => {
     res.json({status: 'success', payload: user})
 })
 
+// Iniciar sesión con Github
+router.get('/github', passport.authenticate('github', { scope: ['user:email']}), async (req, res) => {})
 
 export default router

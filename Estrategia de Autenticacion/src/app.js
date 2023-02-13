@@ -12,6 +12,8 @@ import messageModel from "./dao/models/message.model.js"
 import sessionRouter from './routes/session.router.js'
 import session from "express-session"
 import MongoStore from "connect-mongo"
+import passport from "passport"
+import initializePassport from "./config/passport.config.js"
 
 const app = express()
 const server = http.createServer(app)
@@ -39,8 +41,11 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
+initializePassport()    
+app.use(passport.initialize())
+app.use(passport.session())
 
-// Configuracion del Middleware
+// Configuracion de la Autorizacion
 function requireAuth(req, res, next) {
     if(req.session?.user) {
         return next()
