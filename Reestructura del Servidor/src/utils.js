@@ -5,12 +5,12 @@ import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import config from "./config/config.js";
 
-const PRIVATE_KEY = 'coderSecret'
+const {PRIVATE_KEY} = config;
 
 export const generateToken = user => {
     const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '24h' })
 
-    return token
+    return token;
 };
 
 export const passportCall = (strategy) => {
@@ -24,7 +24,7 @@ export const passportCall = (strategy) => {
                     .json({ status: "error", error: "Invalid credentials" });
             }
 
-            req.user = user
+            req.user = user;
             next();
         })(req, res, next);
     };
