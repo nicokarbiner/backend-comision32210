@@ -19,4 +19,6 @@ export default {
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 };
 
-console.log(process.env.ADMIN_EMAIL) 
+console.log(process.env.ADMIN_EMAIL)
+
+//https://dev.to/khriztianmoreno/introduccion-a-los-archivos-env-3e2f//
