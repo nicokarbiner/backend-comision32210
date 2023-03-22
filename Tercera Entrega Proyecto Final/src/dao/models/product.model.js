@@ -25,7 +25,7 @@ const productSchema = new mongoose.Schema({
     thumbnails: [String],
 });
 
-productSchema.plugin(mongoosePaginate)
+productSchema.plugin(mongoosePaginate);
 
 mongoose.set("strictQuery", false);
 const productModel = mongoose.model(productCollection, productSchema);

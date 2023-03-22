@@ -8,7 +8,6 @@ import handlebars from 'express-handlebars';
 import __dirname from "./utils.js";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
-import messageModel from "./dao/models/message.model.js";
 import sessionRouter from './routes/session.router.js';
 import cookieParser from "cookie-parser";
 import passport from "passport";
@@ -16,8 +15,9 @@ import initializePassport from "./config/passport.config.js";
 import { passportCall, authorization } from "./utils.js";
 import session from "express-session";
 import config from "./config/config.js";
+import { createMessage } from "./controllers/chat.controller.js";
 
-const { SESSION_SECRET, COOKIE_SECRET, MONGO_URI, DB_NAME } = config;
+const { PORT, SESSION_SECRET, COOKIE_SECRET, MONGO_URI, DB_NAME } = config;
 
 const app = express();
 const server = http.createServer(app);
@@ -28,9 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(COOKIE_SECRET));
 initializePassport();
 app.use(passport.initialize());
-app.use(
-    session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true })
-);
+app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.session());
 
 
@@ -59,19 +57,9 @@ mongoose.connect(MONGO_URI, { dbName: DB_NAME }, (error) => {
     }
 
     console.log("DB connected");
-    server.listen(8080, () => console.log("Listening on port 8080"));
+    server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
     server.on("error", (e) => console.log(e));
 });
 
-io.on("connection", (socket) => {
-    console.log("New websocket connection");
-
-    socket.on("chatMessage", async (obj) => {
-        io.emit("message", obj);
-        const newMessage = await messageModel.create({
-            user: obj.user,
-            message: obj.msg,
-        });
-        console.log({ status: "success", payload: newMessage });
-    });
-});
+// Websockets chat
+io.on("connection", createMessage);

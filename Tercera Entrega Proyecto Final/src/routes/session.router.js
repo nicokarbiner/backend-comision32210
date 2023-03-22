@@ -14,10 +14,6 @@ router.post("/register", passportCall("register"), register);
 router.post("/login", passportCall("login"), login);
 router.get("/logout", logout);
 router.get("/current", passportCall("current"), getUser);
-router.get(
-  "/github",
-  passport.authenticate("github", { scope: ["user:email"] }),
-  async (req, res) => {}
-);
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }), async (req, res) => {});
 
 export default router;

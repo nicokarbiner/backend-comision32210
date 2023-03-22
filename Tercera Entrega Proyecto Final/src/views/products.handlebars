@@ -1,6 +1,5 @@
 <section>
   <h1 class="text-3xl mb-4">Nuestras Criptos</h1>
-
   <div class="max-w-[1200px] mx-auto mb-8">
     <div class=" border border-primary-color rounded-lg grid items-center px-4 py-0 h-12">
       {{#if user}}
@@ -35,7 +34,7 @@
           <h2 class="card-title text-xl font-bold mx-auto">{{this.title}}</h2>
           <h4 class="text-sm">${{this.price}}</h4>
           <div class="card-actions justify-center mt-4">
-            <a href="/products/{{this.id}}" class="btn">Ver detalle</a>
+            <a href="/products/{{this._id}}" class="btn">Ver detalle</a>
           </div>
         </div>
       </div>

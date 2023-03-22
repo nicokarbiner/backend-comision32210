@@ -1,5 +1,4 @@
-import CartModel from "../dao/models/cart.model.js";
-import ProductModel from "../dao/models/product.model.js";
+import { cartsService, productsService } from "../repositories/index.js";
 
 // Redirección para empezar por la pantalla de login
 export const redirect = (req, res) => res.redirect("/sessions/login");
@@ -8,48 +7,21 @@ export const redirect = (req, res) => res.redirect("/sessions/login");
 // Get products
 export const getProducts = async (req, res) => {
   try {
-    const limit = req.query?.limit || 10;
-    const page = req.query?.page || 1;
-    const category = req.query?.category;
-    const sortQuery = req.query?.sort;
-    const sortOrder = req.query?.sortorder || "desc";
-    const stock = req.query?.stock;
 
-    const query = {
-      ...(category ? { categories: category } : null),
-      ...(stock ? { stock: { $gt: 0 } } : null),
-    };
-
-    const sort = {};
-    if (sortQuery) {
-      sort[sortQuery] = sortOrder;
-    }
-
-    const options = {
-      limit,
-      page,
-      sort,
-      lean: true,
-    };
-
-    const products = await ProductModel.paginate(query, options);
+    const { products, options: { limit, category, stock } } = await productsService.getPaginate(req)
 
     products.prevLink = products.hasPrevPage
-      ? `/products?page=${products.prevPage}&limit=${limit}${
-          category ? `&category=${category}` : ""
-        }${stock ? `&stock=${stock}` : ""}`
-      : "";
+      ? `/products?page=${products.prevPage}&limit=${limit}${category ? `&category=${category}` : ""}${stock ? `&stock=${stock}` : ""}`
+      : ""
     products.nextLink = products.hasNextPage
-      ? `/products?page=${products.nextPage}&limit=${limit}${
-          category ? `&category=${category}` : ""
-        }${stock ? `&stock=${stock}` : ""}`
-      : "";
+      ? `/products?page=${products.nextPage}&limit=${limit}${category ? `&category=${category}` : ""}${stock ? `&stock=${stock}` : ""}`
+      : ""
 
     const user = req.user;
     res.render("products", { products, user });
   } catch (error) {
     console.log(error);
-    res.render("base", {error});
+    res.render("base", { error });
   }
 };
 
@@ -63,7 +35,7 @@ export const renderForm = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const pid = req.params.pid;
-    const result = await ProductModel.deleteOne({ _id: pid });
+    await productsService.deleteProduct(pid)
     res.redirect("/products");
   } catch (error) {
     console.log(error);
@@ -75,9 +47,8 @@ export const deleteProduct = async (req, res) => {
 export const getProduct = async (req, res) => {
   try {
     const pid = req.params.pid;
-    const product = await ProductModel.findOne({ _id: pid }).lean().exec();
+    const product = await productsService.getProduct(pid)
     const user = req.user;
-
     res.render("oneProduct", { product, user });
   } catch (error) {
     console.log(error);
@@ -89,11 +60,10 @@ export const getProduct = async (req, res) => {
 export const addProduct = async (req, res) => {
   try {
     // const newProduct = await ProductModel.create(req.body)
-    const newProduct = req.body;
-    const generatedProduct = new ProductModel(newProduct);
-    await generatedProduct.save();
+    const data = req.body;
+    const product = await productsService.createProduct(data)
 
-    res.redirect("/products/" + generatedProduct._id);
+    res.redirect("/products/" + product._id);
   } catch (error) {
     console.log(error);
     res.json({ status: "error", error });
@@ -116,12 +86,10 @@ export const filterByCategory = async (req, res) => {
 export const getCartProducts = async (req, res) => {
   try {
     const cid = req.params.cid;
-    const products = await CartModel.findOne({ _id: cid })
-      .populate("products.product")
-      .lean();
+    const cart = await cartsService.getCart(cid)
+    const products = cart.toObject()
 
     const user = req.user;
-
     res.render("cart", { products, user });
   } catch (error) {
     console.log(error);
@@ -132,34 +100,10 @@ export const getCartProducts = async (req, res) => {
 // Add product to cart
 export const addToCart = async (req, res) => {
   try {
-    const cid = req.params.cid;
-    const pid = req.params.pid;
-
-    const cart = await CartModel.findOne({ _id: cid });
-    if (!cart)
-      return res.send({
-        status: "error",
-        error: "No se ha encontrado el carrito",
-      });
-
-    const product = await ProductModel.findOne({ _id: pid });
-    if (!product)
-      return res.send({
-        status: "error",
-        error: "No se ha encontrado el producto",
-      });
-
-    const productIndex = cart.products.findIndex((p) =>
-      p.product.equals(product._id)
-    );
-    if (productIndex === -1) {
-      cart.products.push({ product: product._id, quantity: 1 });
-      await cart.save();
-    } else {
-      cart.products[productIndex].quantity++;
-      await CartModel.updateOne({ _id: cid }, cart);
-    }
-
+    const { cid, pid } = req.params
+    const cart = await cartsService.getCart(cid)
+    const product = await productsService.getProduct(pid)
+    cartsService.addProductToCart(cart, product)
     res.redirect("/carts/" + cid);
   } catch (error) {
     console.log(error);
@@ -187,10 +131,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const user = req.user;
   if (!user)
-    return res
-      .status(400)
-      .render("errors/base", {error: "Invalid credentials", user});
-
+    return res.status(400).render("errors/base", { error: "Invalid credentials", user });
 
   res.cookie("cookieToken", user.token).redirect("/products");
 };

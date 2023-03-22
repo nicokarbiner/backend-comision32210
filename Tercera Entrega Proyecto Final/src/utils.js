@@ -7,7 +7,7 @@ import config from "./config/config.js";
 
 const {PRIVATE_KEY} = config;
 
-export const generateToken = user => {
+export const generateToken = (user) => {
     const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '24h' })
 
     return token;
@@ -15,7 +15,7 @@ export const generateToken = user => {
 
 export const passportCall = (strategy) => {
     return async (req, res, next) => {
-        passport.authenticate(strategy, function (err, user, info) {
+        passport.authenticate(strategy, function (err, user) {
 
             if (err) return next(err);
             if (!user) {
@@ -65,19 +65,19 @@ export const viewsAuthorization = (role) => {
 
         const user = req.user || null
 
-        if (!user) return res.status(401).redirect('/login')
+        if (!user) return res.status(401).redirect('/login');
         if (user.role !== role)
             return res.status(403).render('errors/base', { error: 'Not authorized', user });
-        next()
+        next();
     };
 };
 
-export const createHash = password => 
+export const createHash = (password) => 
     bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 export const isValidPassword = (user, password) => 
     bcrypt.compareSync(password, user.password);
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-export default __dirname
+export default __dirname;

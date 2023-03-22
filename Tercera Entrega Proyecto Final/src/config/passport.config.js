@@ -1,11 +1,10 @@
 import passport from "passport";
 import local from "passport-local";
 import GithubStrategy from "passport-github2";
-import UserModel from "../dao/models/user.model.js";
-import CartModel from "../dao/models/cart.model.js";
 import jwt from "passport-jwt";
 import { createHash, isValidPassword, generateToken } from "../utils.js";
 import config from "./config.js";
+import { cartsService, usersService } from "../repositories/index.js";
 
 const {
     PRIVATE_KEY,
@@ -42,7 +41,7 @@ const initializePassport = () => {
                             .status(400)
                             .json({ status: "error", error: "All fields must be filled" });
 
-                    const user = await UserModel.findOne({ email: username });
+                    const user = await usersService.getUserByEmail(username)
 
                     if (user) {
                         console.log("User already exists");
@@ -58,10 +57,10 @@ const initializePassport = () => {
                         role,
                     };
 
-                    const userCart = await CartModel.create({ products: [] });
+                    const userCart = await cartsService.createCart()
                     newUser.cart = userCart._id;
 
-                    const result = await UserModel.create(newUser);
+                    const result = await usersService.createUser(newUser)
 
                     return done(null, result);
                 } catch (error) {
@@ -95,9 +94,7 @@ const initializePassport = () => {
                         return done(null, admin);
                     }
 
-                    const user = await UserModel.findOne({ email: username })
-                        .lean()
-                        .exec();
+                    const user = await usersService.getUserByEmail(username)
                     if (!user) {
                         console.log("User doesn't exist");
                         return done(null, false);
@@ -126,7 +123,7 @@ const initializePassport = () => {
             },
             async (accessToken, refreshToken, profile, done) => {
                 try {
-                    const user = await UserModel.findOne({ email: profile._json.email });
+                    const user = await usersService.getUserByEmail(profile._json.email)
 
                     if (!user) {
                         const newUser = {
@@ -137,10 +134,10 @@ const initializePassport = () => {
                             password: "",
                         };
 
-                        const userCart = await CartModel.create({ products: [] });
+                        const userCart = await cartsService.createCart()
                         newUser.cart = userCart._id;
 
-                        const result = await UserModel.create(newUser);
+                        const result = await usersService.createUser(newUser)
 
                         const token = generateToken(result);
                         result.token = token;
@@ -181,7 +178,7 @@ const initializePassport = () => {
     });
 
     passport.deserializeUser(async (id, done) => {
-        const user = await UserModel.findById(id);
+        const user = await usersService.getUserByID(id)
         done(null, user);
     });
 };

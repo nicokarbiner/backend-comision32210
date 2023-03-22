@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export default {
+  PORT: process.env.PORT || 8080,
   PRIVATE_KEY: process.env.PRIVATE_KEY,
   COOKIE_NAME: process.env.COOKIE_NAME,
   COOKIE_SECRET: process.env.COOKIE_SECRET,
