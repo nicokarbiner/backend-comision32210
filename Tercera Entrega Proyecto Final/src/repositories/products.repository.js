@@ -49,5 +49,9 @@ export default class ProductsRepository {
         return await this.dao.update(id, product)
     }
 
+    updateStock = async (id, n) => {
+        return await this.dao.update(id, {$inc: {"stock": -n}})
+      }
+
     deleteProduct = async (id) => await this.dao.delete(id)
 }

@@ -59,7 +59,6 @@ export const getProduct = async (req, res) => {
 // Add product
 export const addProduct = async (req, res) => {
   try {
-    // const newProduct = await ProductModel.create(req.body)
     const data = req.body;
     const product = await productsService.createProduct(data)
 

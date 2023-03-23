@@ -5,6 +5,7 @@ import jwt from "passport-jwt";
 import { createHash, isValidPassword, generateToken } from "../utils.js";
 import config from "./config.js";
 import { cartsService, usersService } from "../repositories/index.js";
+import UserDTO from "../dao/DTO/user.dto.js";
 
 const {
     PRIVATE_KEY,
@@ -104,7 +105,8 @@ const initializePassport = () => {
                     const token = generateToken(user);
                     user.token = token;
 
-                    return done(null, user);
+                    const newUser = new UserDTO(user)
+                    return done(null, newUser);
                 } catch (error) {
                     return done(error);
                 }
@@ -165,7 +167,8 @@ const initializePassport = () => {
             },
             async (jwt_payload, done) => {
                 try {
-                    return done(null, jwt_payload.user);
+                    const user = new UserDTO(jwt_payload.user)
+                    return done(null, user);
                 } catch (error) {
                     return done(error);
                 }

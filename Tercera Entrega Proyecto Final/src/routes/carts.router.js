@@ -7,6 +7,7 @@ import {
   updateQuantity,
   emptyCart,
   deleteProduct,
+  purchase,
 } from "../controllers/carts.controller.js";
 
 const router = Router();
@@ -14,6 +15,7 @@ const router = Router();
 router.post("/", createCart);
 router.get("/:cid", getProducts);
 router.post("/:cid/products/:pid", addProduct);
+router.post("/:cid/purchase", purchase);
 router.put("/:cid", updateCart);
 router.put("/:cid/products/:pid", updateQuantity);
 router.delete("/:cid", emptyCart);
