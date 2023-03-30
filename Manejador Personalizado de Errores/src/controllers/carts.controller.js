@@ -1,6 +1,6 @@
 import CartModel from "../dao/models/cart.model.js";
 import ProductModel from "../dao/models/product.model.js";
-import { productsService, cartsService, ticketsService } from "../repositories/index.js";
+import { productsService, cartsService } from "../repositories/index.js";
 
 // Crear carrito
 export const createCart = async (req, res) => {
@@ -18,9 +18,8 @@ export const getProducts = async (req, res) => {
     try {
         const cid = req.params.cid;
         const cart = await cartsService.getCart(cid)
-        res.json({ status: "success", payload: products });
+        res.json({ status: "success", payload: cart });
     } catch (error) {
-        console.log(error);
         res.json({ status: "error", error });
     }
 };
@@ -67,19 +66,29 @@ export const updateQuantity = async (req, res) => {
         const cart = await cartsService.getCart(cid)
         const product = await productsService.getProduct(pid)
 
-        if (!cart) return res.send({ status: "error", error: "No se ha encontrado el carrito" });
-        if (!product) return res.send({ status: "error", error: "No se ha encontrado el producto" });
-
-        const productIndex = cart.products.findIndex((p) => p.product.equals(product._id))
-        cart.products[productIndex].quantity = parseInt(quantity)
-        const updatedCart = await cartsService.updateCart(cid, cart)
-
-        res.json({ status: "success", payload: updatedCart });
-    } catch (error) {
-        console.log(error);
-        res.json({ status: "error", error });
-    }
-};
+        if (!cart) CustomError.createError({
+            name: "Find cart error",
+            cause: generateNullError("Cart"),
+            message: "Error trying to find cart",
+            code: EErrors.NULL_ERROR
+          })
+          if (!product) CustomError.createError({
+            name: "Find product error",
+            cause: generateNullError("Product"),
+            message: "Error trying to find product",
+            code: EErrors.NULL_ERROR
+          })
+      
+          const productIndex = cart.products.findIndex((p) => p.product.equals(product._id))
+          cart.products[productIndex].quantity = parseInt(quantity)
+          const updatedCart = await cartsService.updateCart(cid, cart)
+      
+          res.json({ status: "success", payload: updatedCart });
+        } catch (error) {
+          console.log(error);
+          res.json({ status: "error", error });
+        }
+      };
 
 // Vaciar carrito
 export const emptyCart = async (req, res) => {
@@ -120,35 +129,18 @@ export const deleteProduct = async (req, res) => {
 // Finalizar compra
 export const purchase = async (req, res) => {
     try {
-        const { cid } = req.params
-        const purchaser = req.user.email
-        const cart = await cartsService.getCart(cid)
-        if (cart.length === 0) return res.json({ status: 'error', error: 'El carrito está vacío' })
-
-        const cartProducts = await Promise.all(cart.products.map(async product => {
-            const newObj = await productsService.getProduct(product.product)
-            newObj.quantity = product.quantity
-            return newObj
-        }))
-        const amount = cartProducts.reduce((acc, product) => acc + product.price, 0)
-
-        const outOfStock = cartProducts.filter(p => p.stock === 0)
-        const available = cartProducts.filter(p => p.stock > 0)
-
-        // Disminuye el stock de cada producto por la cantidad guardada en el carrito
-        available.forEach(async product => await productsService.updateStock(product._id, product.quantity))
-
-        const ticket = await ticketsService.createTicket({ amount, purchaser })
-
-        await cartsService.updateCart(cid, { products: outOfStock })
-        if (outOfStock.length > 0) {
-            const ids = outOfStock.map(p => p._id)
-            return res.json({ status: "success", payload: ids })
-        }
-
-        res.json({ status: "success", payload: ticket });
+      const { cid } = req.params
+      const purchaser = req.user.email
+      const { outOfStock, ticket } = await cartsService.purchase(cid, purchaser)
+      
+      if(outOfStock.length > 0) {
+        const ids = outOfStock.map(p => p._id)
+        return res.json({ status: "success", payload: ids })
+      }
+  
+      res.json({ status: "success", payload: ticket });
     } catch (error) {
-        console.log(error);
-        res.json({ status: "error", error });
+      console.log(error);
+      res.json({ status: "error", error });
     }
-}
+  }

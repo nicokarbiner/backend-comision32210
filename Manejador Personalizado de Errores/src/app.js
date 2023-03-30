@@ -16,6 +16,8 @@ import { passportCall, authorization } from "./utils.js";
 import session from "express-session";
 import config from "./config/config.js";
 import { createMessage } from "./controllers/chat.controller.js";
+import mockingProducts from "./mocking/products.mocking.js"
+import errorHandler from "./middleware/errors/index.js"
 
 const { PORT, SESSION_SECRET, COOKIE_SECRET, MONGO_URI, DB_NAME } = config;
 
@@ -39,14 +41,18 @@ app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/public'));
 
 // Configuración de rutas
-app.use('/api/products', passportCall('current'), authorization('user'), productsRouter);
-app.use('/api/carts', cartsRouter);
+app.use('/api/products', productsRouter);
+app.use('/api/carts', passportCall("current"), authorization("user"), cartsRouter);
 app.use('/api/sessions', sessionRouter);
-app.use('/chat', chatRouter);
+app.use('/chat', passportCall("current"), authorization("user"), chatRouter);
+app.use("/mockingproducts", mockingProducts);
 app.use('/', viewsRouter);
 
 /* const MONGO_URI = "mongodb+srv://dbCoderhouse:dbCoderhousePassword@cluster0.uoylv7p.mongodb.net/?retryWrites=true&w=majority"
 const DB_NAME = "ecommerce" */
+
+// Middleware de errores
+app.use(errorHandler)
 
 // Conectando Mongoose con Atlas e iniciando el servidor
 mongoose.set("strictQuery", false);
@@ -62,4 +68,4 @@ mongoose.connect(MONGO_URI, { dbName: DB_NAME }, (error) => {
 });
 
 // Websockets chat
-io.on("connection", createMessage);
+io.on("connection", createMessage(io));
