@@ -8,5 +8,5 @@ export default class MessagesRepository {
     createMessage = async (user, message) => {
         const newMessage = new MessageDTO({user, message})
         this.dao.create(newMessage.user, newMessage.message)
-    }
+    };
 }

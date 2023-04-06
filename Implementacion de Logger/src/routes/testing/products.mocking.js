@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { generateProducts } from "../utils.js";
-import CustomError from "../services/errors/CustomError.js";
-import EErrors from "../services/errors/enums.js";
-import { generatePropertyError, generateDuplicatedError, generateStockError } from "../services/errors/info.js";
+import { generateProducts } from "../../utils.js";
+import CustomError from "../../services/errors/CustomError.js";
+import EErrors from "../../services/errors/enums.js";
+import { generatePropertyError, generateDuplicatedError, generateStockError } from "../../services/errors/info.js";
 
 const router = Router()
 const products = []
@@ -18,10 +18,10 @@ router.get("/", (req, res) => {
 router.post('/', (req, res) => {
     const { id, title, description, lang, code, price, stock, status, categories, thumbnails } = req.body
     const duplicated = products.find(p => p.code === code)
-    if( !title || !code || !price || !stock || typeof(title) !== "string" || typeof(author) !== "string" || typeof(code) !== "string" || typeof(price) !== "number" || typeof(stock) !== "number" ) {
+    if( !title || !code || !price || !stock || typeof(title) !== "string" || typeof(code) !== "string" || typeof(price) !== "number" || typeof(stock) !== "number" ) {
         CustomError.createError({
             name: "Product creation error",
-            cause: generatePropertyError({title, code, price, stock}),
+            cause: generatePropertyError({title, author, code, price, stock}),
             message: "Error trying to create product",
             code: EErrors.INVALID_TYPES_ERROR
         })

@@ -9,11 +9,11 @@ export default class UsersRepository {
     getUserByID = async (id) => {
         const user = await this.dao.getByID(id)
         return new UserDTO(user)
-    }
+    };
     getUserByEmail = async (email) => {
         return await this.dao.getByEmail(email)
-    }
+    };
     createUser = async (data) => {
         return await this.dao.create(data)
-    }
+    };
 }

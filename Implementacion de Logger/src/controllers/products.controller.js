@@ -5,7 +5,7 @@ export const getProducts = async (req, res) => {
     const products = await productsService.getProducts();
     res.json({ status: "success", payload: products });
   } catch (error) {
-    console.log(error);
+    req.logger.error(error);
     res.json({ result: "error", error });
   }
 };
@@ -16,7 +16,7 @@ export const getProduct = async (req, res) => {
     const product = await productsService.getProduct(pid);
     res.json({ status: "success", payload: product });
   } catch (error) {
-    console.log(error);
+    req.logger.error(error);
     res.json({ status: "error", error });
   }
 };
@@ -28,7 +28,7 @@ export const addProduct = async (req, res) => {
 
     res.json({ status: "success", payload: result });
   } catch (error) {
-    console.log(error);
+    req.logger.error(error);
     res.json({ status: "error", error });
   }
 };
@@ -45,7 +45,7 @@ export const updateProduct = async (req, res) => {
     const result = await productsService.updateProduct(pid, updatedProduct);
     res.json({ status: "success", payload: result });
   } catch (error) {
-    console.log(error);
+    req.logger.error(error);
     res.json({ status: "error", error });
   }
 };
@@ -57,7 +57,7 @@ export const deleteProduct = async (req, res) => {
 
     res.json({ status: "success", payload: result });
   } catch (error) {
-    console.log(error);
+    req.logger.error(error);
     res.json({ status: "error", error });
   }
 };

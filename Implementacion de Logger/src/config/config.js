@@ -1,6 +1,11 @@
 import dotenv from "dotenv";
+import options from './process.js'
 
-dotenv.config();
+const environment = options.mode
+
+dotenv.config({
+  path: environment === "development" ? "./.env.development" : "./.env.production"
+});
 
 export default {
   PORT: process.env.PORT || 8080,

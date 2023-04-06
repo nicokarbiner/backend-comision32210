@@ -18,6 +18,8 @@ import config from "./config/config.js";
 import { createMessage } from "./controllers/chat.controller.js";
 import mockingProducts from "./mocking/products.mocking.js"
 import errorHandler from "./middleware/errors/index.js"
+import { logger, addLogger } from "./middleware/logger.js";
+import loggerRouter from "./routes/testing/logger.router.js"
 
 const { PORT, SESSION_SECRET, COOKIE_SECRET, MONGO_URI, DB_NAME } = config;
 
@@ -33,6 +35,8 @@ app.use(passport.initialize());
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.session());
 
+// Winston Logger
+app.use(addLogger)
 
 // Configurando el motor de plantillas
 app.engine('handlebars', handlebars.engine());
@@ -46,6 +50,7 @@ app.use('/api/carts', passportCall("current"), authorization("user"), cartsRoute
 app.use('/api/sessions', sessionRouter);
 app.use('/chat', passportCall("current"), authorization("user"), chatRouter);
 app.use("/mockingproducts", mockingProducts);
+app.use("/loggertest", loggerRouter)
 app.use('/', viewsRouter);
 
 /* const MONGO_URI = "mongodb+srv://dbCoderhouse:dbCoderhousePassword@cluster0.uoylv7p.mongodb.net/?retryWrites=true&w=majority"

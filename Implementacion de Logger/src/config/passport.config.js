@@ -6,6 +6,7 @@ import { createHash, isValidPassword, generateToken } from "../utils.js";
 import config from "./config.js";
 import { cartsService, usersService } from "../repositories/index.js";
 import UserDTO from "../dao/DTO/user.dto.js";
+import CustomError from "../services/errors/CustomError.js";
 
 const {
     PRIVATE_KEY,
@@ -45,7 +46,7 @@ const initializePassport = () => {
                     const user = await usersService.getUserByEmail(username)
 
                     if (user) {
-                        console.log("User already exists");
+                        req.logger.info("User already exists");
                         return done(null, false);
                     }
 
@@ -61,10 +62,11 @@ const initializePassport = () => {
                     const userCart = await cartsService.createCart()
                     newUser.cart = userCart._id;
 
-                    const result = await usersService.createUser(newUser)
+                    const result = await usersService.createUser(newUser);
 
                     return done(null, result);
                 } catch (error) {
+                    req.logger.error(error);
                     return done("Error al registrar el usuario: " + error);
                 }
             }
@@ -91,13 +93,19 @@ const initializePassport = () => {
 
                         const token = generateToken(admin);
                         admin.token = token;
+                        const adminDTO = new UserDTO(admin);
 
-                        return done(null, admin);
+                        return done(null, adminDTO);
                     }
 
                     const user = await usersService.getUserByEmail(username)
                     if (!user) {
-                        console.log("User doesn't exist");
+                        CustomError.createError({
+                            name: "Authentication error",
+                            cause: generateAuthenticationError(),
+                            message: "Error trying to find user.",
+                            code: EErrors.AUTHENTICATION_ERROR,
+                        });
                         return done(null, false);
                     }
                     if (!isValidPassword(user, password)) return done(null, false);
@@ -105,7 +113,7 @@ const initializePassport = () => {
                     const token = generateToken(user);
                     user.token = token;
 
-                    const newUser = new UserDTO(user)
+                    const newUser = new UserDTO(user);
                     return done(null, newUser);
                 } catch (error) {
                     return done(error);

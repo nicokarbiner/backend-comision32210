@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js",
+    "start": "node src/app.js --mode production",
+    "dev": "nodemon src/app.js --mode development",
     "watch": "npx tailwindcss -i ./src/views/layouts/index.css -o ./src/public/css/styles.css --watch"
   },
   "keywords": [],
@@ -13,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "commander": "^10.0.0",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
     "daisyui": "^2.49.0",
@@ -27,7 +29,8 @@
     "passport-github2": "^0.1.12",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "socket.io": "^4.5.4"
+    "socket.io": "^4.5.4",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",

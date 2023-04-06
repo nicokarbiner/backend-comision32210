@@ -7,21 +7,19 @@ export const redirect = (req, res) => res.redirect("/sessions/login");
 // Get products
 export const getProducts = async (req, res) => {
   try {
-
     const { products, options: { limit, category, stock } } = await productsService.getPaginate(req)
 
-    products.prevLink = products.hasPrevPage
-      ? `/products?page=${products.prevPage}&limit=${limit}${category ? `&category=${category}` : ""}${stock ? `&stock=${stock}` : ""}`
-      : ""
-    products.nextLink = products.hasNextPage
-      ? `/products?page=${products.nextPage}&limit=${limit}${category ? `&category=${category}` : ""}${stock ? `&stock=${stock}` : ""}`
-      : ""
+    products.prevLink = products.hasPrevPage 
+    ? `/products?page=${products.prevPage}&limit=${limit}${category ? `&category=${category}` : "" }${stock ? `&stock=${stock}` : ""}` 
+    : ""
+    products.nextLink = products.hasNextPage 
+    ? `/products?page=${products.nextPage}&limit=${limit}${category ? `&category=${category}` : ""}${stock ? `&stock=${stock}` : ""}` 
+    : ""
 
     const user = req.user;
     res.render("products", { products, user });
   } catch (error) {
-    console.log(error);
-    res.render("base", { error });
+    res.render("base", {error});
   }
 };
 
@@ -38,8 +36,7 @@ export const deleteProduct = async (req, res) => {
     await productsService.deleteProduct(pid)
     res.redirect("/products");
   } catch (error) {
-    console.log(error);
-    res.json({ status: "error", error });
+    res.render("base", {error});
   }
 };
 
@@ -51,8 +48,7 @@ export const getProduct = async (req, res) => {
     const user = req.user;
     res.render("oneProduct", { product, user });
   } catch (error) {
-    console.log(error);
-    res.json({ status: "error", error });
+    res.render("base", {error});
   }
 };
 
@@ -64,8 +60,7 @@ export const addProduct = async (req, res) => {
 
     res.redirect("/products/" + product._id);
   } catch (error) {
-    console.log(error);
-    res.json({ status: "error", error });
+    res.render("base", {error});
   }
 };
 
@@ -75,8 +70,7 @@ export const filterByCategory = async (req, res) => {
     const category = req.body.category;
     res.redirect(`/products?category=${category}`);
   } catch (error) {
-    console.log(error);
-    res.json({ status: "error", error });
+    res.render("base", {error});
   }
 };
 
@@ -89,24 +83,22 @@ export const getCartProducts = async (req, res) => {
     const products = cart.toObject()
 
     const user = req.user;
-    res.render("cart", {cid, products, user });
+    res.render("cart", { cid, products, user });
   } catch (error) {
-    console.log(error);
-    res.json({ result: "error", error });
+    res.render("base", {error});
   }
 };
 
 // Add product to cart
 export const addToCart = async (req, res) => {
   try {
-    const { cid, pid } = req.params
+    const {cid, pid} = req.params
     const cart = await cartsService.getCart(cid)
     const product = await productsService.getProduct(pid)
     cartsService.addProductToCart(cart, product)
     res.redirect("/carts/" + cid);
   } catch (error) {
-    console.log(error);
-    res.json({ status: "error", error });
+    res.render("base", {error});
   }
 };
 
@@ -118,8 +110,7 @@ export const deleteCartProducts = async (req, res) => {
     const user = req.user;
     res.render("cart", { cid, products: cart, user })
   } catch (error) {
-    console.log(error);
-    res.json({ status: "error", error });
+    res.render("base", {error});
   }
 }
 
@@ -137,8 +128,7 @@ export const purchase = async (req, res) => {
 
     res.render("purchase", { ticket })
   } catch (error) {
-    console.log(error);
-    res.json({ status: "error", error });
+    res.render("base", {error});
   }
 }
 
@@ -162,7 +152,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const user = req.user;
   if (!user)
-    return res.status(400).render("errors/base", { error: "Invalid credentials", user });
+    return res.status(400).render("errors/base", {error: "Invalid credentials", user});
 
   res.cookie("cookieToken", user.token).redirect("/products");
 };
