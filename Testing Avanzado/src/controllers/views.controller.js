@@ -10,18 +10,18 @@ export const getProducts = async (req, res) => {
   try {
     const { products, options: { limit, category, stock } } = await productsService.getPaginate(req)
 
-    products.prevLink = products.hasPrevPage
-      ? `/products?page=${products.prevPage}&limit=${limit}${category ? `&category=${category}` : ""}${stock ? `&stock=${stock}` : ""}`
-      : ""
-    products.nextLink = products.hasNextPage
-      ? `/products?page=${products.nextPage}&limit=${limit}${category ? `&category=${category}` : ""}${stock ? `&stock=${stock}` : ""}`
-      : ""
+    products.prevLink = products.hasPrevPage 
+    ? `/products?page=${products.prevPage}&limit=${limit}${category ? `&category=${category}` : "" }${stock ? `&stock=${stock}` : ""}` 
+    : ""
+    products.nextLink = products.hasNextPage 
+    ? `/products?page=${products.nextPage}&limit=${limit}${category ? `&category=${category}` : ""}${stock ? `&stock=${stock}` : ""}` 
+    : ""
 
     const user = req.user;
     res.render("products", { products, user });
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 };
 
@@ -38,17 +38,17 @@ export const deleteProduct = async (req, res) => {
     const user = req.user;
     const product = await productsService.getProduct(pid);
 
-    if (user.role === "premium" && user.id !== product.owner) {
+    if(user.role === "premium" && user.id !== product.owner) {
       const error = "You can't modify a product owned by another user"
       req.logger.error(error)
-      return res.status(403).json({ status: "error", error })
+      return res.status(403).json({status: "error", error})
     }
-
+    
     await productsService.deleteProduct(pid)
     res.redirect("/products");
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 };
 
@@ -61,7 +61,7 @@ export const getProduct = async (req, res) => {
     res.render("oneProduct", { product, user });
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 };
 
@@ -71,14 +71,14 @@ export const addProduct = async (req, res) => {
     const { role, id } = req.user
     const data = req.body;
 
-    if (role === "premium") data.owner = id
+    if(role === "premium") data.owner = id
 
     const product = await productsService.createProduct(data)
 
     res.redirect("/products/" + product._id);
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 };
 
@@ -89,7 +89,7 @@ export const filterByCategory = async (req, res) => {
     res.redirect(`/products?category=${category}`);
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 };
 
@@ -105,29 +105,29 @@ export const getCartProducts = async (req, res) => {
     res.render("cart", { cid, products, user });
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 };
 
 // Add product to cart
 export const addToCart = async (req, res) => {
   try {
-    const { cid, pid } = req.params
+    const {cid, pid} = req.params
     const user = req.user
     const cart = await cartsService.getCart(cid)
     const product = await productsService.getProduct(pid)
 
-    if (user.role === "premium" && cart.owner === user.id) {
+    if(user.role === "premium" && cart.owner === user.id) {
       const error = "You can't add your own product to your cart."
       req.logger.error(error)
-      return res.status(403).json({ status: "error", error })
+      return res.status(403).json({status: "error", error}) 
     }
 
-    cartsService.addProductToCart(cart, product)
+    cartsService.addProductToCart(user, cart, product)
     res.redirect("/carts/" + cid);
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 };
 
@@ -135,12 +135,12 @@ export const addToCart = async (req, res) => {
 export const deleteCartProducts = async (req, res) => {
   try {
     const cid = req.params.cid;
-    const cart = await cartsService.updateCart(cid, { products: [] })
+    const cart = await cartsService.updateCart(cid, {products: []})
     const user = req.user;
     res.render("cart", { cid, products: cart, user })
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 }
 
@@ -150,8 +150,8 @@ export const purchase = async (req, res) => {
     const { cid } = req.params
     const purchaser = req.user.email
     const { outOfStock, ticket } = await cartsService.purchase(cid, purchaser)
-
-    if (outOfStock.length > 0) {
+    
+    if(outOfStock.length > 0) {
       const ids = outOfStock.map(p => p.product)
       return res.render("purchase", { ids, ticket, cid })
     }
@@ -159,7 +159,7 @@ export const purchase = async (req, res) => {
     res.render("purchase", { ticket })
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 }
 
@@ -183,7 +183,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const user = req.user;
   if (!user)
-    return res.status(400).render("errors/base", { error: "Invalid credentials", user });
+    return res.status(400).render("errors/base", {error: "Invalid credentials", user});
 
   res.cookie("cookieToken", user.token).redirect("/products");
 };
@@ -220,16 +220,16 @@ export const sendRecoveryMail = async (req, res) => {
   try {
     const { email } = req.body
     await usersService.sendMail(email)
-    res.render("sessions/message", { message: `Enviamos un email al correo ${email}. Ingresá al link para restablecer la contraseña.` })
+    res.render("sessions/message", {message: `Enviamos un email al correo ${email}. Ingresá al link para restablecer la contraseña.`})
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 }
 
 export const renderChangePassword = async (req, res) => {
   const { uid, token } = req.params
-  res.render("sessions/changePassword", { uid, token })
+  res.render("sessions/changePassword", {uid, token})
 }
 
 export const changePassword = async (req, res) => {
@@ -239,22 +239,22 @@ export const changePassword = async (req, res) => {
     const { err } = validateToken(token)
     const user = await usersService.getUserByID(uid)
 
-    if (err?.name === "TokenExpiredError") return res.status(403).redirect("/sessions/password_reset")
-    else if (err) return res.render("errors/base", { error: err })
+    if(err?.name === "TokenExpiredError") return res.status(403).redirect("/sessions/password_reset")
+    else if(err) return res.render("errors/base", {error: err})
 
-    if (!newPassword || !confirmation) return res.render("errors/base", { error: "Escriba y confirme la nueva contraseña" })
-    if (comparePasswords(user, newPassword)) return res.render("errors/base", { error: "La contraseña no puede ser igual a la anterior." })
-    if (newPassword != confirmation) return res.render("errors/base", { error: "Las contraseñas no coinciden." })
+    if(!newPassword || !confirmation) return res.render("errors/base", {error: "Escriba y confirme la nueva contraseña"})
+    if(comparePasswords(user, newPassword)) return res.render("errors/base", {error: "La contraseña no puede ser igual a la anterior."})
+    if(newPassword != confirmation) return res.render("errors/base", {error: "Las contraseñas no coinciden."})
 
     const userData = {
-      ...user,
+      ... user,
       password: createHash(newPassword)
     }
 
     const newUser = await usersService.updateUser(uid, userData)
-    res.render("sessions/message", { message: "Tu contraseña ha sido actualizada. Ya podés iniciar sesión." })
+    res.render("sessions/message", {message: "Tu contraseña ha sido actualizada. Ya podés iniciar sesión."})
   } catch (error) {
     req.logger.error(error.toString());
-    res.render("base", { error });
+    res.render("base", {error});
   }
 }

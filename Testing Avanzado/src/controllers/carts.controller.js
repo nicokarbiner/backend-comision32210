@@ -8,10 +8,10 @@ import { generateAuthorizationError, generateNullError } from "../services/error
 // Crear carrito
 export const createCart = async (req, res) => {
     try {
-        const cart = await cartsService.createCart();
+        const cart = await cartsService.createCart()
         res.json({ status: "success", payload: cart });
     } catch (error) {
-        req.logger.error(error.toString());
+        req.logger.error(error);
         res.json({ status: "error", error });
     }
 };
@@ -20,18 +20,10 @@ export const createCart = async (req, res) => {
 export const getProducts = async (req, res) => {
     try {
         const cid = req.params.cid;
-        const userCart = req.user.cart.toString()
-
-        if (cid !== userCart) CustomError.createError({
-            name: "Authorization error",
-            cause: generateAuthorizationError(),
-            message: "You only have access to your own cart.",
-            code: EErrors.AUTHORIZATION_ERROR
-        })
-        const cart = await cartsService.getCart(cid);
+        const cart = await cartsService.getCart(cid)
         res.json({ status: "success", payload: cart });
     } catch (error) {
-        req.logger.error(error.toString());
+        req.logger.error(error);
         res.json({ status: "error", error });
     }
 };
@@ -40,23 +32,13 @@ export const getProducts = async (req, res) => {
 export const addProduct = async (req, res) => {
     try {
         const { cid, pid } = req.params;
-        const user = req.user;
-        const userCart = user.cart.toString()
-
-        if (cid !== userCart) CustomError.createError({
-            name: "Authorization error",
-            cause: generateAuthorizationError(),
-            message: "You only have access to your own cart.",
-            code: EErrors.AUTHORIZATION_ERROR
-        })
-
         const cart = await cartsService.getCart(cid);
         const product = await productsService.getProduct(pid);
+        const updatedCart = await cartsService.addProductToCart(cart, product);
 
-        const updatedCart = await cartsService.addProductToCart(user, cart, product);
         res.json({ status: "success", payload: updatedCart });
     } catch (error) {
-        req.logger.error(error.toString());
+        req.logger.error(error);
         res.json({ status: "error", error });
     }
 };
@@ -66,14 +48,6 @@ export const updateCart = async (req, res) => {
     try {
         const cid = req.params.cid;
         const products = req.body;
-        const userCart = req.user.cart.toString()
-
-        if (cid !== userCart) CustomError.createError({
-            name: "Authorization error",
-            cause: generateAuthorizationError(),
-            message: "You only have access to your own cart.",
-            code: EErrors.AUTHORIZATION_ERROR
-        })
 
         const prod = await Promise.all(
             products.map(async (p) => await productsService.getProduct(p.product))
@@ -90,7 +64,7 @@ export const updateCart = async (req, res) => {
 
         res.json({ status: "success", payload: cart });
     } catch (error) {
-        req.logger.error(error.toString());
+        req.logger.error(error);
         res.json({ status: "error", error });
     }
 };
@@ -100,17 +74,9 @@ export const updateQuantity = async (req, res) => {
     try {
         const { cid, pid } = req.params;
         const { quantity } = req.body;
-        const userCart = req.user.cart.toString()
 
-        if (cid !== userCart) CustomError.createError({
-            name: "Authorization error",
-            cause: generateAuthorizationError(),
-            message: "You only have access to your own cart.",
-            code: EErrors.AUTHORIZATION_ERROR
-        })
-
-        const cart = await cartsService.getCart(cid);
-        const product = await productsService.getProduct(pid);
+        const cart = await cartsService.getCart(cid)
+        const product = await productsService.getProduct(pid)
 
         if (!cart)
             CustomError.createError({
@@ -135,28 +101,20 @@ export const updateQuantity = async (req, res) => {
 
         res.json({ status: "success", payload: updatedCart });
     } catch (error) {
-        req.logger.error(error.toString());
+        req.logger.error(error);
         res.json({ status: "error", error });
     }
 };
+
 
 // Vaciar carrito
 export const emptyCart = async (req, res) => {
     try {
         const cid = req.params.cid;
-        const userCart = req.user.cart.toString()
-
-        if (cid !== userCart) CustomError.createError({
-            name: "Authorization error",
-            cause: generateAuthorizationError(),
-            message: "You only have access to your own cart.",
-            code: EErrors.AUTHORIZATION_ERROR
-        })
-
-        const cart = await cartsService.updateCart(cid, { products: [] });
+        const cart = await cartsService.updateCart(cid, { products: [] })
         res.json({ status: "success", payload: cart });
     } catch (error) {
-        req.logger.error(error.toString());
+        req.logger.error(error);
         res.json({ status: "error", error });
     }
 };
@@ -165,14 +123,6 @@ export const emptyCart = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     try {
         const { cid, pid } = req.params;
-        const userCart = req.user.cart.toString()
-
-        if (cid !== userCart) CustomError.createError({
-            name: "Authorization error",
-            cause: generateAuthorizationError(),
-            message: "You only have access to your own cart.",
-            code: EErrors.AUTHORIZATION_ERROR
-        })
 
         const cart = await CartModel.findOne({ _id: cid });
         const product = await ProductModel.findOne({ _id: pid });
@@ -202,7 +152,7 @@ export const deleteProduct = async (req, res) => {
 
         res.json({ status: "success", payload: updatedCart });
     } catch (error) {
-        req.logger.error(error.toString());
+        req.logger.error(error);
         res.json({ status: "error", error });
     }
 };
@@ -210,8 +160,8 @@ export const deleteProduct = async (req, res) => {
 // Finalizar compra
 export const purchase = async (req, res) => {
     try {
-        const { cid } = req.params;
-        const purchaser = req.user.email;
+        const { cid } = req.params
+        const purchaser = req.user.email
         const { outOfStock, ticket } = await cartsService.purchase(cid, purchaser);
 
         if (outOfStock.length > 0) {
@@ -222,7 +172,7 @@ export const purchase = async (req, res) => {
 
         res.json({ status: "success", payload: ticket });
     } catch (error) {
-        req.logger.error(error.toString());
+        req.logger.error(error);
         res.json({ status: "error", error });
     }
 };
