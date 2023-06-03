@@ -1,0 +1,25 @@
+<section>
+  <div>
+    <h1>Checkout</h1>
+
+
+    {{#if ticket}}
+        <h2>¡Compra realizada con éxito!</h2>
+        <p>Código de la compra: {{ticket.code}}</p>
+        <p>Valor total: {{ticket.amount}}</p>
+        <p>Comprador: {{ticket.purchaser}}</p>
+    {{/if}}
+
+    {{#if ids}}
+      <p>Las siguientes criptos se encuentran fuera de stock</p>
+      
+      {{#each ids}}
+        <p>id: {{this}}</p>
+      {{/each}}
+
+      <a href="/carts/{{cid}}">Volver al carrito</a>
+
+    {{/if}}
+
+  </div>
+</section>
