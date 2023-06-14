@@ -21,7 +21,6 @@ import loggerRouter from "./src/routes/testing/logger.router.js"
 import { serve, setup } from "swagger-ui-express"
 import specs from "./src/config/swagger.config.js"
 import cors from 'cors'
-import mercadopago from 'mercadopago'
 import ticketsRouter from './src/routes/tickets.router.js'
 
 const { SESSION_SECRET, COOKIE_SECRET, CORS_ORIGIN, MP_ACCESS_TOKEN } = config;
@@ -38,7 +37,6 @@ initializePassport();
 app.use(passport.initialize())
 app.use(session({ secret: 'codersecret', resave: false, saveUninitialized: true }))
 app.use(passport.session())
-mercadopago.configure({access_token: MP_ACCESS_TOKEN})
 
 // Winston Logger
 app.use(addLogger)
