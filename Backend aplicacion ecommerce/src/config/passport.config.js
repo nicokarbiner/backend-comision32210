@@ -66,12 +66,15 @@ const initializePassport = () => {
           newUser.cart = userCart._id
 
           const result = await usersService.createUser(newUser)
-          await usersService.sendRegistrationMail(username)
+          
+          if (environment === 'production') {
+            await usersService.sendRegistrationMail(username)
+          }
 
           return done(null, result)
         } catch (error) {
           req.logger.error(error.toString())
-          return done("Error al registrar el usuario: " + error)
+          return done('Error al registrar el usuario: ' + error)
         }
       }
     )
@@ -117,8 +120,10 @@ const initializePassport = () => {
           const token = generateToken(user)
           user.token = token
 
-          const newUser = new UserDTO(user)
-          return done(null, newUser)
+          user.last_connection = new Date()
+          await usersService.updateUser(user._id, user)
+
+          return done(null, new UserDTO(user))
         } catch (error) {
           return done(error)
         }
@@ -155,12 +160,16 @@ const initializePassport = () => {
 
             const token = generateToken(result)
             result.token = token
+            user.last_connection = new Date()
+            await usersService.updateUser(user._id, user)
 
             return done(null, result)
           }
 
           const token = generateToken(user)
           user.token = token
+          user.last_connection = new Date()
+          await usersService.updateUser(user._id, user)
           done(null, user)
         } catch (error) {
           return done(error)
