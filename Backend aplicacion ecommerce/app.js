@@ -22,6 +22,8 @@ import { serve, setup } from "swagger-ui-express"
 import specs from "./src/config/swagger.config.js"
 import cors from 'cors'
 import ticketsRouter from './src/routes/tickets.router.js'
+import createMemoryStore from 'memorystore'
+const MemoryStore = createMemoryStore(session)
 
 const { SESSION_SECRET, COOKIE_SECRET, CORS_ORIGIN, MP_ACCESS_TOKEN } = config;
 
@@ -35,7 +37,19 @@ app.use(cookieParser(COOKIE_SECRET))
 app.use(cors({ credentials: true, origin: CORS_ORIGIN }))
 initializePassport();
 app.use(passport.initialize())
-app.use(session({ secret: 'codersecret', resave: false, saveUninitialized: true }))
+app.use(
+    session({
+      store: new MemoryStore({ checkPeriod: 86400000 }),
+      secret:  'codersecret',
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      },
+    })
+  )
 app.use(passport.session())
 
 // Winston Logger
@@ -54,7 +68,7 @@ app.use(express.static(__dirname + '/public'))
 app.use('/api/products', productsRouter)
 app.use('/api/carts', passportCall("current"), authorization(["user", "premium"]), cartsRouter)
 app.use('/api/sessions', sessionRouter)
-app.use('/api/users', passportCall('current'), usersRouter)
+app.use('/api/users', usersRouter)
 app.use('/api/purchases', ticketsRouter)
 app.use('/chat', passportCall("current"), authorization(["user", "premium"]), chatRouter)
 app.use("/mockingproducts", mockingProducts)
