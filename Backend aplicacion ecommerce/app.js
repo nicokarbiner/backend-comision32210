@@ -36,7 +36,7 @@ app.use(cookieParser(COOKIE_SECRET))
 app.use(cors({ credentials: true, origin: CORS_ORIGIN }))
 initializePassport();
 app.use(passport.initialize())
-app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true }))
+app.use(session({ secret: 'codersecret', resave: false, saveUninitialized: true }))
 app.use(passport.session())
 mercadopago.configure({access_token: MP_ACCESS_TOKEN})
 
