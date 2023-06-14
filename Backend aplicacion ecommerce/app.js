@@ -79,5 +79,7 @@ app.use('/', viewsRouter)
 /* const MONGO_URI = "mongodb+srv://dbCoderhouse:dbCoderhousePassword@cluster0.uoylv7p.mongodb.net/?retryWrites=true&w=majority"
 const DB_NAME = "ecommerce" */
 
+/* const MONGO_URI = mongodb+srv://nkarbinercoderhouse:PHe540MjFoeI48mC@cluster0.m9pc8jy.mongodb.net/ */
+
 // Middleware de errores
 app.use(errorHandler)
