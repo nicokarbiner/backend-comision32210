@@ -1,8 +1,8 @@
-import { server, io } from '../app.js'
+import { server, io } from './app.js'
 import mongoose from 'mongoose'
-import { logger } from '../src/middleware/logger.js'
-import { createMessage } from '../src/controllers/chat.controller.js'
-import config from '../src/config/config.js'
+import { logger } from './src/middleware/logger.js'
+import { createMessage } from './src/controllers/chat.controller.js'
+import config from './src/config/config.js'
 const { MONGO_URI, DB_NAME, PORT } = config
 
 // Conectando mongoose con Atlas e iniciando el servidor

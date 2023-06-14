@@ -6,8 +6,8 @@
   "scripts": {
     "test": "mocha test/**/*.test.js --mode development",
     "supertest": "mocha test/supertest.test.js --mode development",
-    "start": "node src/app.js --mode production",
-    "dev": "nodemon src/app.js --mode development",
+    "start": "node index.js --mode production",
+    "dev": "nodemon index.js --mode development",
     "watch": "npx tailwindcss -i ./src/views/layouts/index.css -o ./src/public/css/styles.css --watch"
   },
   "keywords": [],
