@@ -4,6 +4,7 @@ import productsRouter from "./src/routes/products.router.js"
 import viewsRouter from "./src/routes/views.router.js"
 import cartsRouter from "./src/routes/carts.router.js"
 import chatRouter from './src/routes/chat.router.js'
+import usersRouter from './src/routes/users.router.js'
 import handlebars from 'express-handlebars'
 import __dirname from "./src/utils.js"
 import { Server } from "socket.io"
@@ -68,7 +69,7 @@ app.use(express.static(__dirname + '/public'))
 app.use('/api/products', productsRouter)
 app.use('/api/carts', passportCall("current"), authorization(["user", "premium"]), cartsRouter)
 app.use('/api/sessions', sessionRouter)
-app.use('/api/users', usersRouter)
+app.use('/api/users', passportCall('current'), usersRouter)
 app.use('/api/purchases', ticketsRouter)
 app.use('/chat', passportCall("current"), authorization(["user", "premium"]), chatRouter)
 app.use("/mockingproducts", mockingProducts)
