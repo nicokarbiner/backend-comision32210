@@ -136,7 +136,7 @@ const initializePassport = () => {
     "github",
     new GithubStrategy(
       {
-        clientID: GITHUB_CLIENT_ID,
+        clientID: e554c37f06eeec8e1a3c,
         clientSecret: GITHUB_CLIENT_SECRET,
         callbackURL: GITHUB_CALLBACK_URL,
       },
