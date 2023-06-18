@@ -7,7 +7,7 @@ const { MONGO_URI, DB_NAME, PORT } = config
 
 // Conectando mongoose con Atlas e iniciando el servidor
 mongoose.set('strictQuery', false)
-mongoose.connect(MONGO_URI, { dbName: DB_NAME }, error => {
+mongoose.connect(MONGO_URI, { dbName: ecommerce }, error => {
   if (error) {
     return logger.fatal("Can't connect to the DB")
   }
