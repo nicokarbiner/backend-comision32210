@@ -9,7 +9,7 @@ dotenv.config({
 
 export default {
   BASE_URL: process.env.BASE_URL,
-  PORT: process.env.PORT || 8080,
+  PORT: process.env.PORT,
   PRIVATE_KEY: process.env.PRIVATE_KEY,
   COOKIE_NAME: process.env.COOKIE_NAME,
   COOKIE_SECRET: process.env.COOKIE_SECRET,
