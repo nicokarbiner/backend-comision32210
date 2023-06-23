@@ -6,7 +6,6 @@ import Mail from "../services/mail.js"
 import config from "../config/config.js"
 import { generateToken } from "../utils.js"
 import __dirname from '../utils.js'
-import UserInfoDTO from '../dao/DTO/userInfo.dto.js'
 
 export default class UsersRepository {
   constructor(dao) {
@@ -75,6 +74,15 @@ export default class UsersRepository {
 
     return await this.mail.send(email, "Registro exitoso", html)
   }
+
+  sendDeletedAccountMail = async email => {
+    const html = `<h1>Cuenta eliminada</h1>
+    <p>Su cuenta ha sido eliminada por inactividad</p>
+    <p>Muchas gracias por utilizar Criptostore ♥</p>`
+
+    return await this.mail.send(email, 'Registro exitoso', html)
+  }
+
   saveDocuments = async (user, files) => {
     const newDocuments = files.map(file => ({
       name: file.document_type,

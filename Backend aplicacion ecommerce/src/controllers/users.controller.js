@@ -31,6 +31,8 @@ export const deleteInactiveUsers = async (req, res) => {
     const inactiveUsers = users.filter(({ last_connection }) => !last_connection || getDiff(last_connection) > 2)
     const ids = inactiveUsers.map(user => user._id)
     const result = await usersService.deleteManyUsers(ids)
+    const emails = inactiveUsers.map(user => user.email)
+    await Promise.all(emails.map(async email => await usersService.sendDeletedAccountMail(email)))
 
     res.json({ status: 'success', result })
   } catch (error) {

@@ -8,11 +8,13 @@ import {
 import { productsService, ticketsService } from "./index.js"
 import mercadopago from 'mercadopago'
 import config from '../config/config.js'
+import Mail from '../services/mail.js'
 const { FRONTEND_BASE_URL, BASE_URL } = config
 
 export default class CartRepository {
   constructor(dao) {
-    this.dao = dao;
+    this.dao = dao
+    this.mail = new Mail()
   }
 
   createCart = async () => {
@@ -184,5 +186,17 @@ export default class CartRepository {
     await this.updateCart(cid, { products: [] })
 
     return { outOfStock, ticket }
+  }
+
+  sendPurchaseMail = async (products, amount, payment_id, email) => {
+    const html = `<h1>¡Gracias por tu compra!</h1>
+      <ul>Te compartimos los detalles del pedido:</ul>
+      ${products.map(p => `<li><b>${p.title}</b> x${p.quantity}</li>`)}
+      <p><b>Total:</b> $${amount}</p>
+      <p><b>ID de la compra:</b> ${payment_id}</p>
+      <br>
+      <p>¡Saludos!</p>`
+
+    return await this.mail.send(email, 'Compra realizada', html)
   }
 }
