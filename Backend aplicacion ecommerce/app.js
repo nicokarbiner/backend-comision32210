@@ -43,7 +43,6 @@ app.use(
     session({
       store: new MemoryStore({ checkPeriod: 86400000 }),
       secret: SESSION_SECRET,
-      /* secret:  'codersecret', */
       resave: false,
       saveUninitialized: true,
       cookie: {
