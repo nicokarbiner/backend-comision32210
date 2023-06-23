@@ -8,7 +8,7 @@ import usersRouter from './src/routes/users.router.js'
 import handlebars from 'express-handlebars'
 import __dirname from "./src/utils.js"
 import { Server } from "socket.io"
-import sessionRouter from './src/routes/sessions.router.js'
+import sessionsRouter from './src/routes/sessions.router.js'
 import cookieParser from "cookie-parser"
 import passport from "passport"
 import initializePassport from "./src/config/passport.config.js"
@@ -70,7 +70,7 @@ app.use(express.static(__dirname + '/public'))
 // Configuración de rutas
 app.use('/api/products', productsRouter)
 app.use('/api/carts', passportCall("current"), authorization(["user", "premium"]), cartsRouter)
-app.use('/api/sessions', sessionRouter)
+app.use('/api/sessions', sessionsRouter)
 app.use('/api/users', passportCall('current'), usersRouter)
 app.use('/api/purchases', ticketsRouter)
 app.use('/chat', passportCall("current"), authorization(["user", "premium"]), chatRouter)
