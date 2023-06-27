@@ -4,8 +4,8 @@ import Cart from "../src/dao/classes/carts.dao.js"
 import config from "../src/config/config.js"
 const { TEST_MONGO_URI } = config
 
-mongoose.connect(TEST_MONGO_URI);
-const expect = chai.expect;
+mongoose.connect(TEST_MONGO_URI)
+const expect = chai.expect
 
 describe("Testing Carts DAO", () => {
     before(function() {

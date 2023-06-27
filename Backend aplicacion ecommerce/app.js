@@ -27,7 +27,7 @@ import ticketsRouter from './src/routes/tickets.router.js'
 import createMemoryStore from 'memorystore'
 const MemoryStore = createMemoryStore(session)
 
-const { SESSION_SECRET, COOKIE_SECRET, CORS_ORIGIN, MP_ACCESS_TOKEN } = config;
+const { SESSION_SECRET, COOKIE_SECRET, CORS_ORIGIN, MP_ACCESS_TOKEN } = config
 
 const app = express()
 export const server = http.createServer(app)
@@ -36,8 +36,8 @@ export const io = new Server(server)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(COOKIE_SECRET))
-app.use(cors({credentials: true, origin: CORS_ORIGIN }))
-initializePassport();
+app.use(cors({credentials: true, origin: CORS_ORIGIN.split(', ') }))
+initializePassport()
 app.use(passport.initialize())
 app.use(
     session({

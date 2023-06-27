@@ -54,7 +54,7 @@ export const generateProducts = () => {
     status: faker.datatype.boolean(),
     stock: faker.random.numeric(),
     categories: [faker.commerce.productAdjective(), faker.commerce.productAdjective()],
-    thumbnails: [faker.image.image()]
+    thumbnails: [faker.image.image()],
   }
 }
 
