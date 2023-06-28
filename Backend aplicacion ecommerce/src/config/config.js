@@ -34,7 +34,3 @@ export default {
   MP_CLIENT_SECRET: process.env.MP_CLIENT_SECRET,
   FRONTEND_BASE_URL: process.env.FRONTEND_BASE_URL,
 };
-
-console.log(process.env.ADMIN_EMAIL)
-
-//https://dev.to/khriztianmoreno/introduccion-a-los-archivos-env-3e2f//
