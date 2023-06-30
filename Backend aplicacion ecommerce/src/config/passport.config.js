@@ -136,11 +136,14 @@ const initializePassport = () => {
     "github",
     new GithubStrategy(
       {
-        clientID: "e554c37f06eeec8e1a3c",
-        clientSecret: "5e234b13ce89fdc4f1aca9b78a27c8ff1be45dc2",
+        clientID: "Iv1.292c05e5fd5b7af5",
+        clientSecret: "aea4758e51fb3312fdbb9654220f96d2d7c43218",
         callbackURL: "http://localhost:8080/api/sessions/githubcallback"
         
-        /* callbackURL: "https://backend-comision32210-production.up.railway.app/auth/github/callback" */
+    /*     clientID: "e554c37f06eeec8e1a3c",
+        clientSecret: "5e234b13ce89fdc4f1aca9b78a27c8ff1be45dc2",
+        callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+        callbackURL: "https://backend-comision32210-production.up.railway.app/auth/github/callback" */
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
