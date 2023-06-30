@@ -138,7 +138,7 @@ const initializePassport = () => {
       {
         clientID: GITHUB_CLIENT_ID,
         clientSecret: GITHUB_CLIENT_SECRET,
-        callbackURL: GITHUB_CALLBACK_URL,
+        callbackURL: "https://backend-comision32210-production.up.railway.app/auth/github/callback"
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
