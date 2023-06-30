@@ -25,7 +25,7 @@ const environment = options.mode
 const JWTStrategy = jwt.Strategy
 const ExtractJWT = jwt.ExtractJwt
 
-const cookieExtractor = (req) => {
+const cookieExtractor = req => {
   const token = req && req.cookies ? req.cookies[COOKIE_NAME] : null
   return token
 }
@@ -66,7 +66,7 @@ const initializePassport = () => {
           newUser.cart = userCart._id
 
           const result = await usersService.createUser(newUser)
-          
+
           if (environment === 'production') {
             await usersService.sendRegistrationMail(username)
           }

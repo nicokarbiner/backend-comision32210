@@ -33,4 +33,4 @@ export default {
   MP_CLIENT_ID: process.env.MP_CLIENT_ID,
   MP_CLIENT_SECRET: process.env.MP_CLIENT_SECRET,
   FRONTEND_BASE_URL: process.env.FRONTEND_BASE_URL,
-};
+}
