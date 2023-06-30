@@ -17,7 +17,7 @@ import session from "express-session"
 import config from "./src/config/config.js"
 import mockingProducts from './src/routes/testing/products.mocking.js'
 import errorHandler from "./src/middleware/errors/index.js"
-import { logger, addLogger } from "./src/middleware/logger.js"
+import { addLogger } from "./src/middleware/logger.js"
 import loggerRouter from "./src/routes/testing/logger.router.js"
 import { serve, setup } from "swagger-ui-express"
 import specs from "./src/config/swagger.config.js"
