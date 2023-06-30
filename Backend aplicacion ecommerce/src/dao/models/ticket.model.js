@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import { codeGenerator } from "../../utils.js"
 
-const ticketCollection = "tickets"
+const ticketCollection = "Tickets"
 
 const ticketSchema = new mongoose.Schema({
     code: {

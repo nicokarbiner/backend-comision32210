@@ -104,6 +104,8 @@ export default class CartRepository {
       return { outOfStock }
     }
 
+    const notificationURL = `${BASE_URL}/api/purchases/${cid}/finish_checkout?purchaser=${purchaser}`
+
     let preference = {
       items: [],
       back_urls: {
