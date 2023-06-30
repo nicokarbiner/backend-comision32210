@@ -14,7 +14,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mercadopago/sdk-js": "^0.0.2",
     "bcrypt": "^5.1.0",
     "commander": "^10.0.0",
     "connect-mongo": "^4.6.0",
@@ -48,8 +47,6 @@
     "supertest": "^6.3.3",
     "tailwindcss": "^3.2.4"
   },
-  "directories": {
-    "test": "test"
-  },
+ 
   "description": ""
 }
