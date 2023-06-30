@@ -10,7 +10,7 @@ import {
 import { passportCall, authorization } from "../middleware/auth.js"
 import { uploader } from '../services/multer.js'
 
-const router = Router();
+const router = Router()
 
 router.get("/", passportCall("current"), getProducts)
 router.get("/:pid", passportCall("current"), getProduct)

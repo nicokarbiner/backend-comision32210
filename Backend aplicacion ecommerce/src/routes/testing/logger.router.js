@@ -1,6 +1,6 @@
 import { Router } from "express"
 
-const router = Router();
+const router = Router()
 
 // 127.0.0.1:[8080|3000]&level=error
 router.get("/", (req, res) => {
