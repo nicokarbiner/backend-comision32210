@@ -40,18 +40,18 @@ app.use(cors({ credentials: true, origin: CORS_ORIGIN.split(', ') }))
 initializePassport()
 app.use(passport.initialize())
 app.use(
-    session({
-      store: new MemoryStore({ checkPeriod: 86400000 }),
-      secret: SESSION_SECRET,
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true,
-      },
-    })
-  )
+  session({
+    store: new MemoryStore({ checkPeriod: 86400000 }),
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    },
+  })
+)
 app.use(passport.session())
 mercadopago.configure({ access_token: MP_ACCESS_TOKEN })
 
@@ -69,19 +69,24 @@ app.use(express.static(__dirname + '/public'))
 
 // Configuración de rutas
 app.use('/api/products', productsRouter)
-app.use('/api/carts', passportCall("current"), authorization(["user", "premium"]), cartsRouter)
+app.use(
+  '/api/carts',
+  passportCall("current"),
+  authorization(["user", "premium"]),
+  cartsRouter
+)
 app.use('/api/sessions', sessionsRouter)
 app.use('/api/users', passportCall('current'), usersRouter)
 app.use('/api/purchases', ticketsRouter)
-app.use('/chat', passportCall("current"), authorization(["user", "premium"]), chatRouter)
+app.use(
+  '/chat', 
+  passportCall("current"), 
+  authorization(["user", "premium"]), 
+  chatRouter
+)
 app.use("/mockingproducts", mockingProducts)
 app.use("/loggertest", loggerRouter)
 app.use('/', viewsRouter)
-
-/* const MONGO_URI = "mongodb+srv://dbCoderhouse:dbCoderhousePassword@cluster0.uoylv7p.mongodb.net/?retryWrites=true&w=majority"
-const DB_NAME = "ecommerce" */
-
-/* const MONGO_URI = mongodb+srv://nkarbinercoderhouse:PHe540MjFoeI48mC@cluster0.m9pc8jy.mongodb.net/ */
 
 // Middleware de errores
 app.use(errorHandler)
