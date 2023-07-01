@@ -19,3 +19,6 @@ mongoose.connect(MONGO_URI, {dbname: DB_NAME }, error => {
 
 // Websockets chat
 io.on('connection', createMessage(io))
+
+/* mongodb+srv://nkarbinercoderhouse:PHe540MjFoeI48mC@cluster0.m9pc8jy.mongodb.net/   Prueba 1
+mongodb+srv://nkarbinercoderhouse:PHe540MjFoeI48mC@cluster0.uoylv7p.mongodb.net/ */   

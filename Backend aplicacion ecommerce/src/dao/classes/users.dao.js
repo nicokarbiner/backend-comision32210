@@ -7,15 +7,15 @@ export default class User {
         return await UserModel.find().lean().exec()
     }
 
-    getByID = async (id) => {
+    getByID = async id => {
         return await UserModel.findById(id).lean().exec()
     }
 
-    getByEmail = async (email) => {
+    getByEmail = async email => {
         return await UserModel.findOne({ email }).lean().exec()
     }
 
-    create = async (data) => {
+    create = async data => {
         const user = await UserModel.create(data)
         return user
     }
@@ -24,7 +24,7 @@ export default class User {
         return await UserModel.findByIdAndUpdate(id, data, { new: true })
     }
 
-    delete = async (id) => {
+    delete = async id => {
         return await UserModel.deleteOne({ _id: id })
     }
 
