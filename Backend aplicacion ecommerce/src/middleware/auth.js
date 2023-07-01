@@ -19,7 +19,7 @@ export const passportCall = strategy => {
           .json({ status: 'error', error: 'Invalid credentials.' })
       }
 
-      if(user.email === ADMIN_EMAIL) {
+      if (user.email === ADMIN_EMAIL) {
         req.user = user
         next()
       } else {
@@ -54,7 +54,7 @@ export const authorization = (roles) => {
     if (!user) CustomError({
       name: "Authentication error",
       cause: generateAuthenticationError(),
-      message: "Invalid credentials.", 
+      message: "Invalid credentials.",
       code: EErrors.AUTHENTICATION_ERROR,
     })
     if (!roles.includes(user.role)) {
