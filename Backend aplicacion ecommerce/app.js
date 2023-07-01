@@ -36,7 +36,7 @@ export const io = new Server(server)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(COOKIE_SECRET))
-app.use(cors(/* { credentials: true, origin: CORS_ORIGIN} */))
+app.use(cors({ credentials: true, origin: 'https://backend-comision32210-production.up.railway.app/sessions/login' }))
 initializePassport()
 app.use(passport.initialize())
 app.use(

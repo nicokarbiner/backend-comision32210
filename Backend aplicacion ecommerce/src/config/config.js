@@ -26,7 +26,7 @@ export default {
   GITHUB_CALLBACK_URL: process.env.GITHUB_CALLBACK_URL,
   USER_MAIL: process.env.USER_MAIL,
   USER_PASS: process.env.USER_PASS,
-  CORS_ORIGIN: process.env.CORS_ORIGIN,
+/*   CORS_ORIGIN: process.env.CORS_ORIGIN, */
   MP_PUBLIC_KEY: process.env.MP_PUBLIC_KEY,
   MP_ACCESS_TOKEN: process.env.MP_ACCESS_TOKEN,
   MP_CLIENT_ID: process.env.MP_CLIENT_ID,
