@@ -4,8 +4,9 @@ import options from './process.js'
 const environment = options.mode
 
 dotenv.config({
-  path: environment === "development" ? "./.env.development" : "./.env.production"
-});
+  path:
+    environment === 'development' ? './.env.development' : './.env.production',
+})
 
 export default {
   BASE_URL: process.env.BASE_URL,

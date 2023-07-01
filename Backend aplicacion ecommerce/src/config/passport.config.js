@@ -35,12 +35,12 @@ const LocalStrategy = local.Strategy
 const initializePassport = () => {
   // Registro
   passport.use(
-    "register",
+    'register',
     new LocalStrategy(
-      { passReqToCallback: true, usernameField: "email" },
+      { passReqToCallback: true, usernameField: 'email' },
       async (req, username, password, done) => {
         try {
-          const { first_name, last_name, email, age, role = "user" } = req.body
+          const { first_name, last_name, email, age, role = 'user' } = req.body
           if (!first_name || !last_name || !email || !age || !password)
             return res
               .status(400)
@@ -82,9 +82,9 @@ const initializePassport = () => {
 
   // Login
   passport.use(
-    "login",
+    'login',
     new LocalStrategy(
-      { usernameField: "email" },
+      { usernameField: 'email' },
       async (username, password, done) => {
         try {
           if (username === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
@@ -92,10 +92,10 @@ const initializePassport = () => {
               _id: ADMIN_ID,
               email: username,
               password,
-              first_name: "Admin",
-              last_name: "Coder",
+              first_name: 'Admin',
+              last_name: 'Coder',
               age: 100,
-              role: "admin",
+              role: 'admin',
             }
 
             const token = generateToken(admin)
