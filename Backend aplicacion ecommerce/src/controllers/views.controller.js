@@ -203,7 +203,7 @@ export const login = async (req, res) => {
       .status(400)
       .render('errors/base', { error: 'Invalid credentials', user })
 
-  res.cookie('cookieToken', user.token).redirect('/products')
+  res.cookie('mycookie', user.token).redirect('/products')
 }
 
 // Logout
@@ -211,7 +211,7 @@ export const logout = async (req, res) => {
   const user = req.user
   user.last_connection = new Date()
   await usersService.updateUser(user.id, user)
-  res.clearCookie('cookieToken').redirect('/sessions/login')
+  res.clearCookie('mycookie').redirect('/sessions/login')
 }
 
 // Get user
@@ -229,7 +229,7 @@ export const getUser = (req, res) => {
 
 // Iniciar sesión con Github
 export const githubLogin = async (req, res) => {
-  return res.cookie('cookieToken', req.user.token).redirect('/products')
+  return res.cookie('mycookie', req.user.token).redirect('/products')
 }
 
 // Renderizar página para enviar mail
