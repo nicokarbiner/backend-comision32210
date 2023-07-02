@@ -19,7 +19,7 @@ export default class ProductsRepository {
     
         const query = search ? { $or: [{ title: { '$regex': search, '$options': 'i' } }, { categories: { '$regex': search, '$options': 'i' } }] } 
         : {
-          ...(category ? { categories: category } : null),
+          ...(category ? { category: category } : null),
           ...(stock ? { stock: { $gt: 0 } } : null),
           ...(owner ? { owner: owner } : null)
         }
